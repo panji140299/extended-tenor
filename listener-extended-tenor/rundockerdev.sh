@@ -1,0 +1,1 @@
+mvn clean package -DskipTests && docker build . -t solace-notification-email-template -f Dockerfile.dev && docker run solace-notification-email-template

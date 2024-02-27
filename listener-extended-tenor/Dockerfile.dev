@@ -1,0 +1,6 @@
+FROM openjdk:17
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+COPY /config/java.security /usr/java/openjdk-17/conf/security/java.security 
+COPY email/* email/
+ENTRYPOINT ["java","-jar","/app.jar"]
