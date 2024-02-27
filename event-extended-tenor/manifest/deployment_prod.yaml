@@ -1,0 +1,40 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: event-extended-tenor
+spec:
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: event-extended-tenor
+  replicas: 1
+  template: 
+    metadata:
+      labels:
+        app: event-extended-tenor
+    spec:
+      containers:
+      - name: event-extended-tenor
+        image: __IMAGE__:__VERSION__
+        ports:
+        - containerPort: 80
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: event-extended-tenor-config
+            mountPath: /config/application.properties
+            subPath: application.properties
+          - mountPath: /etc/localtime
+            name: tz-config
+      nodeName: beautodebetapi
+      restartPolicy: Always
+      volumes:
+        - name: event-extended-tenor-config
+          configMap:
+            name: event-extended-tenor-config
+        - hostPath: 
+            path: /usr/share/zoneinfo/Asia/Jakarta
+            type: File 
+          name: tz-config
+      imagePullSecrets:
+      - name: regcred

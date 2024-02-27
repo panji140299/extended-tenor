@@ -1,0 +1,41 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: event-extended-tenor-staging
+spec:
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: event-extended-tenor-staging
+  replicas: 1
+  template: 
+    metadata:
+      labels:
+        app: event-extended-tenor-staging
+    spec:
+      containers:
+      - name: event-extended-tenor-staging
+        image: __IMAGE__:__VERSION__
+        ports:
+        - containerPort: 80
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: event-extended-tenor-staging-config
+            mountPath: /config/application.properties
+            subPath: application.properties
+          - mountPath: /etc/localtime
+            name: tz-config
+      nodeSelector:
+        aplikasi: backend
+      restartPolicy: Always
+      volumes:
+        - name: event-extended-tenor-staging-config
+          configMap:
+            name: event-extended-tenor-staging-config
+        - hostPath: 
+            path: /usr/share/zoneinfo/Asia/Jakarta
+            type: File 
+          name: tz-config
+      imagePullSecrets:
+      - name: regcred
